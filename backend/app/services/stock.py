@@ -187,7 +187,7 @@ def get_period_open_issued_quantity(db: Session, tool_id, from_date: date, to_da
             IssuanceLog.tool_id == tool_id,
             IssuanceLog.actual_return_date == None,
             IssuanceLog.issued_at.cast(Date) <= to_date,
-            IssuanceLog.expected_return_date >= from_date,
+            IssuanceLog.expected_return_date > from_date,
         )
         .all()
     )
