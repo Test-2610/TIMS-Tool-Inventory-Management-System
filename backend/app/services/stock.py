@@ -158,7 +158,7 @@ def get_period_reserved_quantity(
         Requisition.tool_id == tool_id,
         Requisition.status == "approved",
         Requisition.from_date <= to_date,
-        Requisition.to_date >= from_date,
+        Requisition.to_date > from_date,
     )
     if exclude_requisition_id:
         query = query.filter(Requisition.id != exclude_requisition_id)
