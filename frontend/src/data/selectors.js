@@ -74,7 +74,7 @@ export function departmentReports(requests = [], issuances = []) {
 export function employeeReports(issuances = []) {
   const rows = new Map()
   issuances.forEach((issuance) => {
-    const employee = issuance.borrower_name || 'Unknown'
+    const employee = issuance.borrower_dept || 'Unknown'
     const row = rows.get(employee) || { employee, department: issuance.borrower_dept, issue_count: 0, quantity_issued: 0 }
     row.issue_count += 1
     row.quantity_issued += Number(issuance.quantity_issued) || 0
