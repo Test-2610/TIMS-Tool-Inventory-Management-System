@@ -65,7 +65,7 @@ export function departmentReports(requests = [], issuances = []) {
   issuances.forEach((issuance) => {
     const dept = issuance.borrower_dept || 'Unassigned'
     const row = rows.get(dept) || { department: dept, total_requests: 0, approved_requests: 0, rejected_requests: 0, total_issued: 0 }
-    row.total_issued += Number(issuance.quantity_issued) || 0
+    row.total_issued += 1
     rows.set(dept, row)
   })
   return Array.from(rows.values())
