@@ -12,7 +12,7 @@ def sync_calibration_statuses(db: Session, today: date | None = None) -> None:
     changed = False
 
     for tool in tools:
-        overdue = bool(tool.next_calibration_due and tool.next_calibration_due <= today)
+        overdue = bool(tool.next_calibration_due and tool.next_calibration_due < today)
         if overdue and tool.status == "active":
             tool.status = "calibration_due"
             changed = True
@@ -29,5 +29,5 @@ def is_calibration_blocked(tool: Tool, today: date | None = None) -> bool:
     return bool(
         tool.requires_calibration
         and tool.next_calibration_due
-        and tool.next_calibration_due <= today
+        and tool.next_calibration_due < today
     )
