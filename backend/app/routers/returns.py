@@ -115,7 +115,7 @@ def process_return(
             existing_breakdown[key] = int(existing_breakdown.get(key, 0) or 0) + condition_quantities[key]
 
         cumulative_returned = previous_returned + payload.quantity_returned
-        log.quantity_returned = cumulative_returned
+        log.quantity_returned = payload.quantity_returned
         log.quantity_consumed = int(log.quantity_consumed or 0) + quantity_consumed
         if existing_breakdown["missing"] > 0:
             log.return_condition = "missing"
