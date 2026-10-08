@@ -133,7 +133,7 @@ def report_stock(
             t.standard_life_months,
         ) if unit_cost is not None else None
         current_unit_value_f = float(current_unit_value) if current_unit_value is not None else unit_cost
-        physical_available = row.get("stored_available_quantity", row["available_quantity"])
+        physical_available = row["available_quantity"]
         current_value = (
             round(physical_available * current_unit_value_f, 2)
             if current_unit_value_f is not None
