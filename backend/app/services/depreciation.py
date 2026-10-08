@@ -24,6 +24,7 @@ def calculate_current_value(
 
     today = date.today()
     months_elapsed = (today.year - purchase_date.year) * 12 + (today.month - purchase_date.month)
+    months_elapsed += int(today.day < purchase_date.day)
     months_elapsed = max(0, months_elapsed)
 
     price = Decimal(str(purchase_price))
