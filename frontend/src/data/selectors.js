@@ -1,7 +1,7 @@
 const BLOCKED_STATUSES = new Set(['calibration_due', 'damaged', 'written_off', 'blocked'])
 
 export function availableTools(tools = []) {
-  return tools.filter((tool) => !BLOCKED_STATUSES.has(tool.status) && (tool.available_quantity || 0) > 0)
+  return tools.filter((tool) => !BLOCKED_STATUSES.has(tool.status) && (tool.available_quantity || 0) >= 0)
 }
 
 export function blockedTools(tools = []) {
