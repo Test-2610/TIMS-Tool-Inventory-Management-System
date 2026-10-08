@@ -23,7 +23,7 @@ export function overdueReturns(issuances = []) {
     if (issuance.actual_return_date || !issuance.expected_return_date) return false
     const due = new Date(issuance.expected_return_date)
     due.setHours(0, 0, 0, 0)
-    return due < today
+    return due <= today
   })
 }
 
