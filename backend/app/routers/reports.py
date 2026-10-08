@@ -204,7 +204,7 @@ def report_issuance_history(
     if from_date:
         query = query.filter(IssuanceLog.issued_at >= from_date)
     if to_date:
-        query = query.filter(IssuanceLog.issued_at < to_date + timedelta(days=1))
+        query = query.filter(IssuanceLog.issued_at <= to_date)
     if status == "open":
         query = query.filter(IssuanceLog.actual_return_date == None)
     elif status == "closed":
