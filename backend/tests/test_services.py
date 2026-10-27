@@ -387,3 +387,13 @@ def test_scheduler_does_not_change_terminal_tool_statuses(monkeypatch):
         "blocked",
         "out_of_stock",
     ]
+
+
+@pytest.mark.parametrize("port", [0, 65536])
+def test_smtp_port_must_be_in_valid_tcp_port_range(port):
+    from pydantic import ValidationError
+
+    from app.config import Settings
+
+    with pytest.raises(ValidationError):
+        Settings(DATABASE_URL="sqlite://", SECRET_KEY="test", SMTP_PORT=port)

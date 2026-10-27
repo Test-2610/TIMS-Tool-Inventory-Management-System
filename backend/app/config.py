@@ -1,3 +1,4 @@
+from pydantic import Field
 from pydantic_settings import BaseSettings
 
 
@@ -8,7 +9,7 @@ class Settings(BaseSettings):
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 480
     FRONTEND_BASE_URL: str = "http://localhost:3000"
     SMTP_HOST: str | None = None
-    SMTP_PORT: int = 587
+    SMTP_PORT: int = Field(default=587, ge=1, le=65535)
     SMTP_USER: str | None = None
     SMTP_PASSWORD: str | None = None
     SMTP_FROM: str | None = None
