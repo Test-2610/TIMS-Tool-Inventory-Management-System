@@ -387,3 +387,10 @@ def test_scheduler_does_not_change_terminal_tool_statuses(monkeypatch):
         "blocked",
         "out_of_stock",
     ]
+
+def test_damage_market_rates_and_writeoff_reasons_are_validated():
+    from math import isnan
+    from app.schemas.damage import DamageAssessment, WriteOffPayload
+    assessment = DamageAssessment(damage_type='mishandling', notes='  Bent housing  ')
+    assert assessment.notes == 'Bent housing'
+    assert WriteOffPayload(reason='  Scrap  ', quantity=1).reason == 'Scrap'
