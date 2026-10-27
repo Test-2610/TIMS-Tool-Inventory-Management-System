@@ -387,3 +387,9 @@ def test_scheduler_does_not_change_terminal_tool_statuses(monkeypatch):
         "blocked",
         "out_of_stock",
     ]
+
+def test_storage_bin_strings_are_trimmed():
+    from app.schemas.storage_bin import StorageBinCreate
+    bin = StorageBinCreate(bin_code='  A1  ', shelf_label='  Top  ', capacity=10)
+    assert bin.bin_code == 'A1'
+    assert bin.shelf_label == 'Top'
