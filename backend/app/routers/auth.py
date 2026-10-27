@@ -148,17 +148,17 @@ def _create_reset_token(db: Session, user: User) -> str:
 def _normalize_requested_role(role: str) -> str:
     role_map = {
         "requester": "requester",
-        "Requester": "requester",
         "dept_head": "dept_head",
-        "Dept Head": "dept_head",
+        "dept head": "dept_head",
         "head": "dept_head",
         "staff": "maintenance_staff",
         "maintenance_staff": "maintenance_staff",
-        "Maintenance Staff": "maintenance_staff",
+        "maintenance staff": "maintenance_staff",
         "maintenance_admin": "maintenance_admin",
-        "Admin": "maintenance_admin",
+        "admin": "maintenance_admin",
     }
-    return role_map.get(role, role)
+    normalized_role = role.strip().casefold()
+    return role_map.get(normalized_role, role.strip())
 
 
 def _clean_mobile(value: str) -> str:
