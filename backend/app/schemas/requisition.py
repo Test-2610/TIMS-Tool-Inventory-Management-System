@@ -1,7 +1,7 @@
-from pydantic import BaseModel, Field, model_validator
+from pydantic import BaseModel, Field, field_validator, model_validator
 from datetime import date
 from uuid import UUID
-from typing import Optional
+from typing import Any, Optional
 
 
 class RequisitionCreate(BaseModel):
@@ -10,6 +10,11 @@ class RequisitionCreate(BaseModel):
     purpose_of_job: str = Field(min_length=5)
     from_date: date
     to_date: date
+
+    @field_validator("purpose_of_job", mode="before")
+    @classmethod
+    def trim_purpose_of_job(cls, value: Any) -> Any:
+        return value.strip() if isinstance(value, str) else value
 
     @model_validator(mode="after")
     def validate_dates(self) -> "RequisitionCreate":
