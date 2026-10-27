@@ -66,7 +66,10 @@ def calculate_penalty(
     if damage_type == "theft":
         if market_rate is None:
             raise ValueError("Market rate required for theft penalty calculation")
-        return Decimal(str(market_rate)).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
+        rate = Decimal(str(market_rate))
+        if not rate.is_finite() or rate <= 0:
+            raise ValueError("Market rate must be a finite positive amount")
+        return rate.quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
 
     if damage_type == "mishandling":
         if depreciated_value_at_issue is None:

@@ -67,6 +67,14 @@ def test_penalty_theft_with_market_rate():
     assert result == Decimal("8500.00")
 
 
+@pytest.mark.parametrize("market_rate", [0, -1, float("nan"), float("inf")])
+def test_penalty_theft_rejects_non_positive_or_non_finite_market_rate(market_rate):
+    from app.services.depreciation import calculate_penalty
+
+    with pytest.raises(ValueError, match="finite positive"):
+        calculate_penalty("theft", Decimal("5000"), market_rate=market_rate)
+
+
 def test_penalty_mishandling_none_snapshot_returns_zero():
     from app.services.depreciation import calculate_penalty
 
