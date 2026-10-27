@@ -86,6 +86,8 @@ def restore_stock(db: Session, tool_id: str, quantity: int) -> Tool:
     Restores stock by quantity_returned (not quantity_issued — handles partial returns).
     Does NOT commit — caller commits after updating issuance log.
     """
+    if quantity < 0:
+        raise HTTPException(status_code=400, detail="Quantity cannot be negative")
     tool = get_tool_locked(db, tool_id)
     tool.available_quantity += quantity
     db.flush()
