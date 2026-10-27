@@ -1,5 +1,5 @@
-from pydantic import BaseModel, ConfigDict, Field, condecimal, model_validator
-from typing import Optional, Literal
+from pydantic import BaseModel, ConfigDict, Field, condecimal, field_validator, model_validator
+from typing import Any, Optional, Literal
 from datetime import date
 from uuid import UUID
 
@@ -7,8 +7,8 @@ Money = condecimal(ge=0, max_digits=12, decimal_places=2)
 
 
 class ToolCreate(BaseModel):
-    tool_code: str
-    name: str
+    tool_code: str = Field(min_length=1)
+    name: str = Field(min_length=1)
     category: Optional[str] = None
     tool_type: Literal["general", "specialized"]
     department_access: Optional[str] = None
@@ -26,11 +26,16 @@ class ToolCreate(BaseModel):
     last_calibration_date: Optional[date] = None
     service_partner: Optional[str] = None
 
+    @field_validator("tool_code", "name", mode="before")
+    @classmethod
+    def trim_required_text(cls, value: Any) -> Any:
+        return value.strip() if isinstance(value, str) else value
+
 
 class ToolUpdate(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
-    name: Optional[str] = None
+    name: Optional[str] = Field(default=None, min_length=1)
     category: Optional[str] = None
     tool_type: Optional[Literal["general", "specialized"]] = None
     department_access: Optional[str] = None
@@ -47,6 +52,11 @@ class ToolUpdate(BaseModel):
     calibration_freq_days: Optional[int] = Field(default=None, gt=0, le=36500)
     last_calibration_date: Optional[date] = None
     service_partner: Optional[str] = None
+
+    @field_validator("name", mode="before")
+    @classmethod
+    def trim_name(cls, value: Any) -> Any:
+        return value.strip() if isinstance(value, str) else value
 
     @model_validator(mode="before")
     @classmethod
