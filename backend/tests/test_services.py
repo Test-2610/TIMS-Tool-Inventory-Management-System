@@ -387,3 +387,20 @@ def test_scheduler_does_not_change_terminal_tool_statuses(monkeypatch):
         "blocked",
         "out_of_stock",
     ]
+
+
+def test_send_sms_rejects_blank_recipient(monkeypatch):
+    from unittest.mock import Mock
+
+    from app.config import settings
+    from app.services.sms import send_sms
+
+    request = Mock()
+    monkeypatch.setattr(settings, "SMS_PROVIDER", "twilio")
+    monkeypatch.setattr(settings, "TWILIO_ACCOUNT_SID", "sid")
+    monkeypatch.setattr(settings, "TWILIO_AUTH_TOKEN", "token")
+    monkeypatch.setattr(settings, "TWILIO_FROM_NUMBER", "+10000000000")
+    monkeypatch.setattr("app.services.sms.urllib.request.urlopen", request)
+
+    assert send_sms("   ", "OTP") is False
+    request.assert_not_called()

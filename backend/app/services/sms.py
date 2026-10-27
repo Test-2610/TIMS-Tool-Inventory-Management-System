@@ -45,6 +45,11 @@ def _send_twilio_sms(to_number: str, message: str) -> bool:
 
 
 def send_sms(to_number: str, message: str) -> bool:
+    to_number = (to_number or "").strip()
+    if not to_number:
+        logger.error("SMS recipient is blank. Message was not sent.")
+        return False
+
     provider = (settings.SMS_PROVIDER or "").strip().lower()
     if provider == "twilio" or (
         not settings.SMS_API_URL
