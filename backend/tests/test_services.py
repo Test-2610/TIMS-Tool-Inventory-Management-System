@@ -250,6 +250,15 @@ def test_tool_create_rejects_invalid_financial_and_calibration_values(field, val
         ToolCreate(**payload)
 
 
+def test_storage_bin_update_rejects_unknown_fields():
+    from pydantic import ValidationError
+
+    from app.schemas.storage_bin import StorageBinUpdate
+
+    with pytest.raises(ValidationError):
+        StorageBinUpdate(shel_label="Upper shelf")
+
+
 def test_requisition_number_takes_postgres_transaction_lock():
     from types import SimpleNamespace
     from unittest.mock import MagicMock

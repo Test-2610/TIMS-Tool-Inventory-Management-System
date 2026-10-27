@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field
 from typing import Optional
 
 
@@ -16,6 +16,8 @@ class StorageBinCreate(BaseModel):
 
 
 class StorageBinUpdate(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
     shelf_label: Optional[str] = None
     section: Optional[str] = None
     department_cat: Optional[str] = None
