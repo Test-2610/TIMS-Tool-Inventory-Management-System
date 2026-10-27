@@ -5,7 +5,7 @@ from pydantic import BaseModel, Field, model_validator
 
 class DamageAssessment(BaseModel):
     damage_type: Literal["theft", "mishandling", "wear_and_tear"]
-    market_rate_at_damage: Optional[float] = Field(default=None, gt=0)
+    market_rate_at_damage: Optional[float] = Field(default=None, gt=0, allow_inf_nan=False)
     notes: Optional[str] = None
 
     @model_validator(mode="after")

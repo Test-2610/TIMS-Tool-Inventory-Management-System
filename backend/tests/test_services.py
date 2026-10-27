@@ -123,6 +123,16 @@ def test_damage_return_quantities_are_validated_by_schema_breakdown():
     validate_damage_return(3, 1, "missing")
 
 
+@pytest.mark.parametrize("market_rate", [float("nan"), float("inf"), float("-inf")])
+def test_damage_assessment_rejects_non_finite_market_rates(market_rate):
+    from pydantic import ValidationError
+
+    from app.schemas.damage import DamageAssessment
+
+    with pytest.raises(ValidationError):
+        DamageAssessment(damage_type="theft", market_rate_at_damage=market_rate)
+
+
 def test_tool_visibility_scopes_non_maintenance_queries():
     from types import SimpleNamespace
     from unittest.mock import MagicMock
