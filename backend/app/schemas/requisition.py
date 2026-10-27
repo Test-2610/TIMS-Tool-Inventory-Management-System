@@ -1,7 +1,7 @@
-from pydantic import BaseModel, Field, model_validator
+from pydantic import BaseModel, Field, field_validator, model_validator
 from datetime import date
 from uuid import UUID
-from typing import Optional
+from typing import Any, Optional
 
 
 class RequisitionCreate(BaseModel):
@@ -23,3 +23,8 @@ class RequisitionCreate(BaseModel):
 
 class RejectPayload(BaseModel):
     reason: str = Field(min_length=3)
+
+    @field_validator("reason", mode="before")
+    @classmethod
+    def trim_reason(cls, value: Any) -> Any:
+        return value.strip() if isinstance(value, str) else value

@@ -214,6 +214,17 @@ def test_requisition_create_rejects_past_from_date():
         assert "from_date cannot be in the past" in str(exc)
 
 
+def test_rejection_reason_is_trimmed_and_must_contain_text():
+    from pydantic import ValidationError
+
+    from app.schemas.requisition import RejectPayload
+
+    assert RejectPayload(reason="  duplicate request  ").reason == "duplicate request"
+    for reason in ("", "  ", " a "):
+        with pytest.raises(ValidationError):
+            RejectPayload(reason=reason)
+
+
 def test_snapshot_value_at_issuance_matches_current_value():
     from app.services.depreciation import calculate_current_value, snapshot_value_at_issuance
     from datetime import date
