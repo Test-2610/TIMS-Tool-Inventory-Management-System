@@ -387,3 +387,17 @@ def test_scheduler_does_not_change_terminal_tool_statuses(monkeypatch):
         "blocked",
         "out_of_stock",
     ]
+
+def test_requisition_purpose_and_reason_are_trimmed():
+    from datetime import date, timedelta
+    from uuid import uuid4
+    from app.schemas.requisition import RequisitionCreate, RejectPayload
+    req = RequisitionCreate(
+        tool_id=uuid4(),
+        quantity_requested=1,
+        purpose_of_job='  Valid purpose  ',
+        from_date=date.today() + timedelta(days=1),
+        to_date=date.today() + timedelta(days=2),
+    )
+    assert req.purpose_of_job == 'Valid purpose'
+    assert RejectPayload(reason='  Approved  ').reason == 'Approved'
