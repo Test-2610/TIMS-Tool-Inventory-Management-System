@@ -387,3 +387,9 @@ def test_scheduler_does_not_change_terminal_tool_statuses(monkeypatch):
         "blocked",
         "out_of_stock",
     ]
+
+
+def test_department_access_is_trimmed():
+    from app.schemas.tool import ToolCreate
+    item = ToolCreate(tool_code='T-102', name='Saw', tool_type='general', total_quantity=1, department_access='  E&I  ')
+    assert item.department_access == 'E&I'
