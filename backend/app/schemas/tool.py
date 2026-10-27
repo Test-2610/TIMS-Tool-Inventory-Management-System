@@ -1,5 +1,5 @@
-from pydantic import BaseModel, ConfigDict, Field, condecimal, model_validator
-from typing import Optional, Literal
+from pydantic import BaseModel, ConfigDict, Field, condecimal, field_validator, model_validator
+from typing import Any, Optional, Literal
 from datetime import date
 from uuid import UUID
 
@@ -10,7 +10,7 @@ class ToolCreate(BaseModel):
     tool_code: str
     name: str
     category: Optional[str] = None
-    tool_type: Literal["general", "specialized"]
+    tool_type: Literal['general', 'specialized']
     department_access: Optional[str] = None
     is_consumable: bool = False
     make: Optional[str] = None
@@ -26,13 +26,21 @@ class ToolCreate(BaseModel):
     last_calibration_date: Optional[date] = None
     service_partner: Optional[str] = None
 
+    @field_validator('department_access', mode='before')
+    @classmethod
+    def normalize_department_access(cls, value: Any) -> Any:
+        if isinstance(value, str):
+            value = value.strip()
+            return value or None
+        return value
+
 
 class ToolUpdate(BaseModel):
-    model_config = ConfigDict(extra="forbid")
+    model_config = ConfigDict(extra='forbid')
 
     name: Optional[str] = None
     category: Optional[str] = None
-    tool_type: Optional[Literal["general", "specialized"]] = None
+    tool_type: Optional[Literal['general', 'specialized']] = None
     department_access: Optional[str] = None
     is_consumable: Optional[bool] = None
     make: Optional[str] = None
@@ -48,11 +56,11 @@ class ToolUpdate(BaseModel):
     last_calibration_date: Optional[date] = None
     service_partner: Optional[str] = None
 
-    @model_validator(mode="before")
+    @model_validator(mode='before')
     @classmethod
     def reject_derived_lifecycle_fields(cls, values):
-        protected = {"status", "next_calibration_due"}.intersection(values or {})
+        protected = {'status', 'next_calibration_due'}.intersection(values or {})
         if protected:
-            fields = ", ".join(sorted(protected))
-            raise ValueError(f"Derived lifecycle field(s) cannot be updated directly: {fields}")
+            fields = ', '.join(sorted(protected))
+            raise ValueError(f'Derived lifecycle field(s) cannot be updated directly: {fields}')
         return values
