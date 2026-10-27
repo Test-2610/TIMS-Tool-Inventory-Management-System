@@ -123,6 +123,17 @@ def test_damage_return_quantities_are_validated_by_schema_breakdown():
     validate_damage_return(3, 1, "missing")
 
 
+def test_writeoff_reason_is_trimmed_and_must_contain_text():
+    from pydantic import ValidationError
+
+    from app.schemas.damage import WriteOffPayload
+
+    assert WriteOffPayload(reason="  beyond repair  ").reason == "beyond repair"
+    for reason in ("", "  ", " no "):
+        with pytest.raises(ValidationError):
+            WriteOffPayload(reason=reason)
+
+
 def test_tool_visibility_scopes_non_maintenance_queries():
     from types import SimpleNamespace
     from unittest.mock import MagicMock
