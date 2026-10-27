@@ -324,6 +324,18 @@ def test_depleted_consumable_becomes_out_of_stock_not_written_off():
     assert tool.status == "out_of_stock"
 
 
+def test_consume_stock_rejects_negative_quantity():
+    from fastapi import HTTPException
+    from unittest.mock import MagicMock
+
+    from app.services.stock import consume_stock
+
+    with pytest.raises(HTTPException) as exc:
+        consume_stock(MagicMock(), "tool-id", -1)
+
+    assert exc.value.status_code == 400
+
+
 def test_writeoff_requires_damaged_durable_tool():
     from types import SimpleNamespace
     from fastapi import HTTPException

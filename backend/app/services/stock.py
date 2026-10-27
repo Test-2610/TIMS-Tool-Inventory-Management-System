@@ -97,6 +97,8 @@ def consume_stock(db: Session, tool_id: str, quantity: int) -> Tool:
     Permanently removes consumed, damaged, missing, or written-off units.
     Does not change available_quantity; callers restore usable returns separately.
     """
+    if quantity < 0:
+        raise HTTPException(status_code=400, detail="Quantity cannot be negative")
     tool = get_tool_locked(db, tool_id)
     if quantity <= 0:
         return tool
