@@ -387,3 +387,10 @@ def test_scheduler_does_not_change_terminal_tool_statuses(monkeypatch):
         "blocked",
         "out_of_stock",
     ]
+
+
+def test_damage_notes_are_trimmed():
+    from app.schemas.damage import DamageAssessment, WriteOffPayload
+    item = DamageAssessment(damage_type='mishandling', notes='  bent housing  ')
+    assert item.notes == 'bent housing'
+    assert WriteOffPayload(reason='  scrap  ', quantity=1).reason == 'scrap'
