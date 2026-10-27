@@ -166,6 +166,9 @@ def _clean_mobile(value: str) -> str:
 
 
 def _validate_mobile_number(value: str | None) -> str:
+    raw_value = (value or "").strip()
+    if not re.fullmatch(r"[+\d\s().-]+", raw_value):
+        raise HTTPException(status_code=400, detail="Enter a valid mobile number with 10 to 15 digits.")
     mobile = _clean_mobile(value or "")
     if not re.fullmatch(r"\+?\d{10,15}", mobile):
         raise HTTPException(status_code=400, detail="Enter a valid mobile number with 10 to 15 digits.")
