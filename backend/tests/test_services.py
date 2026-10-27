@@ -387,3 +387,17 @@ def test_scheduler_does_not_change_terminal_tool_statuses(monkeypatch):
         "blocked",
         "out_of_stock",
     ]
+
+
+def test_send_sms_rejects_blank_message(monkeypatch):
+    from unittest.mock import Mock
+
+    from app.config import settings
+    from app.services.sms import send_sms
+
+    request = Mock()
+    monkeypatch.setattr(settings, "SMS_API_URL", "https://sms.example.com")
+    monkeypatch.setattr("app.services.sms.urllib.request.urlopen", request)
+
+    assert send_sms("+10000000000", "   ") is False
+    request.assert_not_called()
