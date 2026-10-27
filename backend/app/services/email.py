@@ -8,7 +8,9 @@ logger = logging.getLogger(__name__)
 
 
 def is_email_configured() -> bool:
-    return bool(settings.SMTP_HOST and (settings.SMTP_FROM_EMAIL or settings.SMTP_FROM))
+    smtp_host = (settings.SMTP_HOST or "").strip()
+    from_email = (settings.SMTP_FROM_EMAIL or settings.SMTP_FROM or "").strip()
+    return bool(smtp_host and from_email)
 
 
 def _send_email(to_email: str, subject: str, body: str) -> bool:

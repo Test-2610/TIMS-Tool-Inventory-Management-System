@@ -387,3 +387,14 @@ def test_scheduler_does_not_change_terminal_tool_statuses(monkeypatch):
         "blocked",
         "out_of_stock",
     ]
+
+
+def test_email_is_not_configured_with_whitespace_host(monkeypatch):
+    from app.config import settings
+    from app.services.email import is_email_configured
+
+    monkeypatch.setattr(settings, "SMTP_HOST", "   ")
+    monkeypatch.setattr(settings, "SMTP_FROM_EMAIL", "alerts@example.com")
+    monkeypatch.setattr(settings, "SMTP_FROM", None)
+
+    assert is_email_configured() is False
