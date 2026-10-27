@@ -22,13 +22,15 @@ def _return_breakdown(notes: str | None) -> dict:
         return {"good": 0, "damaged": 0, "missing": 0}
     try:
         data = json.loads(first[len(BREAKDOWN_PREFIX):])
-    except (TypeError, ValueError, json.JSONDecodeError):
+        if not isinstance(data, dict):
+            return {"good": 0, "damaged": 0, "missing": 0}
+        return {
+            "good": int(data.get("good", 0) or 0),
+            "damaged": int(data.get("damaged", 0) or 0),
+            "missing": int(data.get("missing", 0) or 0),
+        }
+    except (TypeError, ValueError, OverflowError):
         return {"good": 0, "damaged": 0, "missing": 0}
-    return {
-        "good": int(data.get("good", 0) or 0),
-        "damaged": int(data.get("damaged", 0) or 0),
-        "missing": int(data.get("missing", 0) or 0),
-    }
 
 
 def validate_writeoff_eligibility(tool: Tool) -> None:
