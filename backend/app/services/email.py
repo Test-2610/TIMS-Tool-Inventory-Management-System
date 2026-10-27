@@ -12,6 +12,10 @@ def is_email_configured() -> bool:
 
 
 def _send_email(to_email: str, subject: str, body: str) -> bool:
+    to_email = (to_email or "").strip()
+    if not to_email:
+        logger.warning("Email recipient is blank. Message not sent for subject %s", subject)
+        return False
     from_email = settings.SMTP_FROM_EMAIL or settings.SMTP_FROM
     if not is_email_configured():
         logger.warning("SMTP is not configured. Email not sent to %s for subject %s", to_email, subject)
