@@ -387,3 +387,18 @@ def test_scheduler_does_not_change_terminal_tool_statuses(monkeypatch):
         "blocked",
         "out_of_stock",
     ]
+
+
+@pytest.mark.parametrize(
+    ("role", "expected"),
+    [
+        ("REQUESTER", "requester"),
+        ("Dept Head", "dept_head"),
+        ("MAINTENANCE STAFF", "maintenance_staff"),
+        ("Admin", "maintenance_admin"),
+    ],
+)
+def test_requested_role_aliases_are_case_insensitive(role, expected):
+    from app.routers.auth import _normalize_requested_role
+
+    assert _normalize_requested_role(role) == expected
