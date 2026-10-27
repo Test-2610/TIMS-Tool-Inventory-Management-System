@@ -250,6 +250,26 @@ def test_tool_create_rejects_invalid_financial_and_calibration_values(field, val
         ToolCreate(**payload)
 
 
+def test_storage_bin_labels_are_trimmed_and_cannot_be_blank():
+    from pydantic import ValidationError
+
+    from app.schemas.storage_bin import StorageBinCreate, StorageBinUpdate
+
+    payload = {"bin_code": " BIN-1 ", "shelf_label": " Upper shelf "}
+    created = StorageBinCreate(**payload)
+    assert created.bin_code == "BIN-1"
+    assert created.shelf_label == "Upper shelf"
+
+    for field in payload:
+        invalid_payload = {**payload, field: "   "}
+        with pytest.raises(ValidationError):
+            StorageBinCreate(**invalid_payload)
+
+    assert StorageBinUpdate(shelf_label="  Lower shelf ").shelf_label == "Lower shelf"
+    with pytest.raises(ValidationError):
+        StorageBinUpdate(shelf_label="   ")
+
+
 def test_requisition_number_takes_postgres_transaction_lock():
     from types import SimpleNamespace
     from unittest.mock import MagicMock
