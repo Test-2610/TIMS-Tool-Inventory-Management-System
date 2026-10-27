@@ -195,6 +195,20 @@ def test_return_breakdown_parser_counts_damaged_and_missing():
     assert _return_breakdown(notes) == {"good": 4, "damaged": 1, "missing": 0}
 
 
+@pytest.mark.parametrize(
+    "payload",
+    ["null", "[]", '{"good":"unknown"}', '{"damaged":1e999}'],
+)
+def test_return_breakdown_parser_ignores_invalid_payload_shapes(payload):
+    from app.services.stock import _return_breakdown
+
+    assert _return_breakdown(f"RETURN_BREAKDOWN:{payload}") == {
+        "good": 0,
+        "damaged": 0,
+        "missing": 0,
+    }
+
+
 def test_requisition_create_rejects_past_from_date():
     from datetime import date, timedelta
     from pydantic import ValidationError
