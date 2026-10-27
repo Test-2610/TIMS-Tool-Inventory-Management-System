@@ -387,3 +387,12 @@ def test_scheduler_does_not_change_terminal_tool_statuses(monkeypatch):
         "blocked",
         "out_of_stock",
     ]
+
+
+def test_notify_user_rejects_empty_message():
+    from unittest.mock import MagicMock
+
+    from app.services.notifications import notify_user
+
+    with pytest.raises(ValueError, match="cannot be empty"):
+        notify_user(MagicMock(), "user-id", "   ")

@@ -13,6 +13,9 @@ def notify_user(db: Session, user_id: str, message: str) -> Notification:
     """
     Creates a notification record for a specific user.
     """
+    message = message.strip()
+    if not message:
+        raise ValueError("Notification message cannot be empty")
     notification = Notification(
         id=uuid.uuid4(),
         user_id=user_id,
