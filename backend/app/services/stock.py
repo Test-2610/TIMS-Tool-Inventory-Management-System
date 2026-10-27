@@ -69,6 +69,8 @@ def reduce_stock(db: Session, tool_id: str, quantity: int) -> Tool:
     Raises HTTP 400 if available_quantity < quantity (never allow negative stock).
     Does NOT commit — caller commits after creating issuance log.
     """
+    if quantity <= 0:
+        raise HTTPException(status_code=400, detail="Quantity must be greater than zero")
     tool = get_tool_locked(db, tool_id)
     if tool.available_quantity < quantity:
         raise HTTPException(

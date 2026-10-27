@@ -114,6 +114,21 @@ def test_get_tool_locked_requests_database_row_lock():
     query.with_for_update.assert_called_once_with()
 
 
+@pytest.mark.parametrize("quantity", [0, -1])
+def test_reduce_stock_rejects_non_positive_quantity(quantity):
+    from fastapi import HTTPException
+    from unittest.mock import MagicMock
+
+    from app.services.stock import reduce_stock
+
+    db = MagicMock()
+    with pytest.raises(HTTPException) as exc:
+        reduce_stock(db, "tool-id", quantity)
+
+    assert exc.value.status_code == 400
+    db.query.assert_not_called()
+
+
 def test_damage_return_quantities_are_validated_by_schema_breakdown():
     from app.services.stock import validate_damage_return
 
