@@ -224,6 +224,15 @@ def test_snapshot_value_at_issuance_matches_current_value():
     assert v1 == v2
 
 
+def test_audit_json_safe_stringifies_non_string_dictionary_keys():
+    from uuid import uuid4
+
+    from app.services.audit import _json_safe
+
+    key = uuid4()
+    assert _json_safe({key: "value"}) == {str(key): "value"}
+
+
 @pytest.mark.parametrize(
     ("field", "value"),
     [

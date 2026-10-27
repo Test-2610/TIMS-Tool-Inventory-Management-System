@@ -15,7 +15,7 @@ def _json_safe(value):
     if isinstance(value, uuid.UUID):
         return str(value)
     if isinstance(value, dict):
-        return {key: _json_safe(item) for key, item in value.items()}
+        return {str(_json_safe(key)): _json_safe(item) for key, item in value.items()}
     if isinstance(value, (list, tuple)):
         return [_json_safe(item) for item in value]
     return value
