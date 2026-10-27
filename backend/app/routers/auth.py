@@ -7,6 +7,7 @@ from datetime import datetime, timedelta
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
 from pydantic import BaseModel, EmailStr, Field, field_validator
+from typing import Literal
 from sqlalchemy.orm import Session
 from uuid import UUID
 
@@ -64,7 +65,7 @@ class ForgotUsernameRequest(BaseModel):
 
 
 class AccessOtpSendRequest(SignupRequest):
-    otp_channel: str = "mobile"  # "mobile" or "email"
+    otp_channel: Literal["mobile", "email"] = "mobile"
 
 
 class AccessOtpVerifyRequest(BaseModel):
@@ -271,7 +272,7 @@ def signup(payload: SignupRequest, db: Session = Depends(get_db)):
 def send_access_otp(payload: AccessOtpSendRequest, db: Session = Depends(get_db)):
     employee_id = payload.employee_id.strip().upper()
     email = payload.email.strip().lower()
-    channel = payload.otp_channel if payload.otp_channel in ("mobile", "email") else "mobile"
+    channel = payload.otp_channel
     mobile_number = _clean_mobile(payload.mobile_number) if payload.mobile_number else None
     requested_role = _normalize_requested_role(payload.requested_role)
 
