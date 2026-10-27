@@ -387,3 +387,19 @@ def test_scheduler_does_not_change_terminal_tool_statuses(monkeypatch):
         "blocked",
         "out_of_stock",
     ]
+
+
+def test_otp_send_request_rejects_unsupported_channel():
+    from pydantic import ValidationError
+
+    from app.routers.auth import AccessOtpSendRequest
+
+    with pytest.raises(ValidationError):
+        AccessOtpSendRequest(
+            employee_id="EMP001",
+            full_name="Test User",
+            email="test@example.com",
+            password="Password1!",
+            department="Maintenance",
+            otp_channel="fax",
+        )
