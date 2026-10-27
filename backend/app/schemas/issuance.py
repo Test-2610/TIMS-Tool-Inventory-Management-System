@@ -1,11 +1,19 @@
-from pydantic import BaseModel, Field, model_validator
-from typing import Optional, Literal
+from pydantic import BaseModel, Field, field_validator, model_validator
+from typing import Any, Optional, Literal
 from uuid import UUID
 
 
 class IssuanceCreate(BaseModel):
     requisition_id: UUID
     notes: Optional[str] = None
+
+    @field_validator('notes', mode='before')
+    @classmethod
+    def trim_notes(cls, value: Any) -> Any:
+        if isinstance(value, str):
+            value = value.strip()
+            return value or None
+        return value
 
 
 class ReturnCreate(BaseModel):
@@ -14,10 +22,20 @@ class ReturnCreate(BaseModel):
     condition_quantities: Optional[dict[Literal["good", "damaged", "missing"], int]] = None
     notes: Optional[str] = None
 
+    @field_validator('notes', mode='before')
+    @classmethod
+    def trim_notes(cls, value: Any) -> Any:
+        if isinstance(value, str):
+            value = value.strip()
+            return value or None
+        return value
+
     @model_validator(mode="after")
     def validate_condition_quantities(self) -> "ReturnCreate":
         if self.condition_quantities is None:
             return self
+        if self.notes is not None and not self.notes.strip():
+            self.notes = None
         total = 0
         for condition, quantity in self.condition_quantities.items():
             if quantity < 0:

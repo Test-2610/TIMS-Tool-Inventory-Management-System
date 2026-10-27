@@ -387,3 +387,9 @@ def test_scheduler_does_not_change_terminal_tool_statuses(monkeypatch):
         "blocked",
         "out_of_stock",
     ]
+
+
+def test_issuance_blank_notes_are_normalized():
+    from app.schemas.issuance import IssuanceCreate
+    assert IssuanceCreate(requisition_id='00000000-0000-0000-0000-000000000001', notes='  keep me  ').notes == 'keep me'
+    assert IssuanceCreate(requisition_id='00000000-0000-0000-0000-000000000001', notes='   ').notes is None
