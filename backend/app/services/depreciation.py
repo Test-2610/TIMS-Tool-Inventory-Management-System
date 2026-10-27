@@ -19,7 +19,7 @@ def calculate_current_value(
     Returns current depreciated value of a tool.
     Returns None if any input is missing (tool has no financial data).
     """
-    if not purchase_price or not purchase_date or not standard_life_months:
+    if purchase_price is None or purchase_date is None or standard_life_months is None:
         return None
 
     today = date.today()

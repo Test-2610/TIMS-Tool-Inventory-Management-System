@@ -36,6 +36,14 @@ def test_depreciation_returns_none_when_missing_data():
     assert calculate_current_value(None, None, 24) is None
 
 
+def test_zero_purchase_price_has_zero_current_value():
+    from datetime import date
+
+    from app.services.depreciation import calculate_current_value
+
+    assert calculate_current_value(0, date.today(), 24) == Decimal("0.00")
+
+
 def test_penalty_theft_requires_market_rate():
     from app.services.depreciation import calculate_penalty
 
