@@ -7,15 +7,15 @@ Money = condecimal(ge=0, max_digits=12, decimal_places=2)
 
 
 class ToolCreate(BaseModel):
-    tool_code: str
-    name: str
-    category: Optional[str] = None
+    tool_code: str = Field(max_length=50)
+    name: str = Field(max_length=200)
+    category: Optional[str] = Field(default=None, max_length=100)
     tool_type: Literal["general", "specialized"]
-    department_access: Optional[str] = None
+    department_access: Optional[str] = Field(default=None, max_length=50)
     is_consumable: bool = False
-    make: Optional[str] = None
-    model: Optional[str] = None
-    serial_number: Optional[str] = None
+    make: Optional[str] = Field(default=None, max_length=100)
+    model: Optional[str] = Field(default=None, max_length=100)
+    serial_number: Optional[str] = Field(default=None, max_length=100)
     purchase_date: Optional[date] = None
     purchase_price: Optional[Money] = None
     standard_life_months: Optional[int] = Field(default=None, gt=0)
@@ -24,20 +24,20 @@ class ToolCreate(BaseModel):
     requires_calibration: bool = False
     calibration_freq_days: Optional[int] = Field(default=None, gt=0, le=36500)
     last_calibration_date: Optional[date] = None
-    service_partner: Optional[str] = None
+    service_partner: Optional[str] = Field(default=None, max_length=200)
 
 
 class ToolUpdate(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
-    name: Optional[str] = None
-    category: Optional[str] = None
+    name: Optional[str] = Field(default=None, max_length=200)
+    category: Optional[str] = Field(default=None, max_length=100)
     tool_type: Optional[Literal["general", "specialized"]] = None
-    department_access: Optional[str] = None
+    department_access: Optional[str] = Field(default=None, max_length=50)
     is_consumable: Optional[bool] = None
-    make: Optional[str] = None
-    model: Optional[str] = None
-    serial_number: Optional[str] = None
+    make: Optional[str] = Field(default=None, max_length=100)
+    model: Optional[str] = Field(default=None, max_length=100)
+    serial_number: Optional[str] = Field(default=None, max_length=100)
     purchase_date: Optional[date] = None
     purchase_price: Optional[Money] = None
     standard_life_months: Optional[int] = Field(default=None, gt=0)
@@ -46,7 +46,7 @@ class ToolUpdate(BaseModel):
     requires_calibration: Optional[bool] = None
     calibration_freq_days: Optional[int] = Field(default=None, gt=0, le=36500)
     last_calibration_date: Optional[date] = None
-    service_partner: Optional[str] = None
+    service_partner: Optional[str] = Field(default=None, max_length=200)
 
     @model_validator(mode="before")
     @classmethod

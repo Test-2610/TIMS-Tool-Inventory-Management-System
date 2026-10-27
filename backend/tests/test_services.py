@@ -387,3 +387,23 @@ def test_scheduler_does_not_change_terminal_tool_statuses(monkeypatch):
         "blocked",
         "out_of_stock",
     ]
+
+
+@pytest.mark.parametrize(
+    ("field", "value"),
+    [("tool_code", "T" * 51), ("name", "N" * 201)],
+)
+def test_tool_create_rejects_text_longer_than_database_columns(field, value):
+    from pydantic import ValidationError
+
+    from app.schemas.tool import ToolCreate
+
+    payload = {
+        "tool_code": "TL-LIMIT",
+        "name": "Length Test",
+        "tool_type": "general",
+        "total_quantity": 1,
+        field: value,
+    }
+    with pytest.raises(ValidationError):
+        ToolCreate(**payload)
