@@ -250,6 +250,35 @@ def test_tool_create_rejects_invalid_financial_and_calibration_values(field, val
         ToolCreate(**payload)
 
 
+@pytest.mark.parametrize("field", ["tool_code", "name"])
+def test_tool_create_trims_and_rejects_blank_required_text(field):
+    from pydantic import ValidationError
+
+    from app.schemas.tool import ToolCreate
+
+    payload = {
+        "tool_code": " TL-VALIDATION ",
+        "name": " Validation Tool ",
+        "tool_type": "general",
+        "total_quantity": 1,
+    }
+    assert getattr(ToolCreate(**payload), field) == payload[field].strip()
+
+    payload[field] = "   "
+    with pytest.raises(ValidationError):
+        ToolCreate(**payload)
+
+
+def test_tool_update_trims_name_and_rejects_blank_name():
+    from pydantic import ValidationError
+
+    from app.schemas.tool import ToolUpdate
+
+    assert ToolUpdate(name="  Updated Tool  ").name == "Updated Tool"
+    with pytest.raises(ValidationError):
+        ToolUpdate(name="   ")
+
+
 def test_requisition_number_takes_postgres_transaction_lock():
     from types import SimpleNamespace
     from unittest.mock import MagicMock
