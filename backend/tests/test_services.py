@@ -387,3 +387,10 @@ def test_scheduler_does_not_change_terminal_tool_statuses(monkeypatch):
         "blocked",
         "out_of_stock",
     ]
+
+
+def test_tool_code_and_name_are_trimmed():
+    from app.schemas.tool import ToolCreate
+    item = ToolCreate(tool_code='  T-101  ', name='  Drill  ', tool_type='general', total_quantity=1)
+    assert item.tool_code == 'T-101'
+    assert item.name == 'Drill'
