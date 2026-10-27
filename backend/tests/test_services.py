@@ -176,6 +176,22 @@ def test_validate_consumable_return_full_return():
     assert consumed == 0
 
 
+def test_validate_consumable_return_rejects_excess_quantity():
+    from fastapi import HTTPException
+    from types import SimpleNamespace
+
+    from app.services.stock import validate_consumable_return
+
+    with pytest.raises(HTTPException) as exc:
+        validate_consumable_return(
+            SimpleNamespace(is_consumable=True),
+            quantity_issued=3,
+            quantity_returned=4,
+        )
+
+    assert exc.value.status_code == 400
+
+
 def test_validate_non_consumable_partial_return_allowed():
     from app.services.stock import validate_consumable_return
     from unittest.mock import MagicMock

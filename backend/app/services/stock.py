@@ -276,6 +276,11 @@ def validate_consumable_return(tool: Tool, quantity_issued: int, quantity_return
     Returns quantity_consumed (0 for non-consumables).
     Raises HTTP 400 for invalid partial return on non-consumable.
     """
+    if quantity_returned > quantity_issued:
+        raise HTTPException(
+            status_code=400,
+            detail="Returned quantity cannot exceed the issued quantity",
+        )
     if quantity_returned < quantity_issued:
         return quantity_issued - quantity_returned  # quantity_consumed
     return 0
