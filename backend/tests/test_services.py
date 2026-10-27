@@ -387,3 +387,9 @@ def test_scheduler_does_not_change_terminal_tool_statuses(monkeypatch):
         "blocked",
         "out_of_stock",
     ]
+
+
+def test_audit_json_safe_converts_sets_to_lists():
+    from app.services.audit import _json_safe
+
+    assert set(_json_safe({1, 2, 3})) == {1, 2, 3}
