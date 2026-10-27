@@ -387,3 +387,14 @@ def test_scheduler_does_not_change_terminal_tool_statuses(monkeypatch):
         "blocked",
         "out_of_stock",
     ]
+
+
+def test_mobile_number_validation_rejects_alphabetic_characters():
+    from fastapi import HTTPException
+
+    from app.routers.auth import _validate_mobile_number
+
+    with pytest.raises(HTTPException) as exc:
+        _validate_mobile_number("abc1234567890")
+
+    assert exc.value.status_code == 400
