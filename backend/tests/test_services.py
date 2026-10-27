@@ -214,6 +214,28 @@ def test_requisition_create_rejects_past_from_date():
         assert "from_date cannot be in the past" in str(exc)
 
 
+def test_requisition_purpose_is_trimmed_and_must_contain_text():
+    from datetime import date
+    from uuid import uuid4
+
+    from pydantic import ValidationError
+
+    from app.schemas.requisition import RequisitionCreate
+
+    payload = {
+        "tool_id": uuid4(),
+        "quantity_requested": 1,
+        "purpose_of_job": "  repair pump  ",
+        "from_date": date.today(),
+        "to_date": date.today(),
+    }
+    assert RequisitionCreate(**payload).purpose_of_job == "repair pump"
+
+    payload["purpose_of_job"] = "     "
+    with pytest.raises(ValidationError):
+        RequisitionCreate(**payload)
+
+
 def test_snapshot_value_at_issuance_matches_current_value():
     from app.services.depreciation import calculate_current_value, snapshot_value_at_issuance
     from datetime import date
