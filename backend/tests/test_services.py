@@ -387,3 +387,19 @@ def test_scheduler_does_not_change_terminal_tool_statuses(monkeypatch):
         "blocked",
         "out_of_stock",
     ]
+
+
+def test_send_email_rejects_newlines_in_headers(monkeypatch):
+    from unittest.mock import Mock
+
+    from app.config import settings
+    from app.services.email import _send_email
+
+    smtp = Mock()
+    monkeypatch.setattr(settings, "SMTP_HOST", "smtp.example.com")
+    monkeypatch.setattr(settings, "SMTP_FROM_EMAIL", "alerts@example.com")
+    monkeypatch.setattr(settings, "SMTP_FROM", None)
+    monkeypatch.setattr("app.services.email.smtplib.SMTP", smtp)
+
+    assert _send_email("user@example.com", "Subject\r\nBcc: other@example.com", "Body") is False
+    smtp.assert_not_called()

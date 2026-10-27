@@ -17,6 +17,10 @@ def _send_email(to_email: str, subject: str, body: str) -> bool:
         logger.warning("SMTP is not configured. Email not sent to %s for subject %s", to_email, subject)
         return False
 
+    if any("\r" in value or "\n" in value for value in (to_email, str(from_email), subject)):
+        logger.warning("Email header contains a newline. Message not sent for subject %s", subject)
+        return False
+
     message = EmailMessage()
     message["Subject"] = subject
     message["From"] = from_email
