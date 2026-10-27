@@ -387,3 +387,12 @@ def test_scheduler_does_not_change_terminal_tool_statuses(monkeypatch):
         "blocked",
         "out_of_stock",
     ]
+
+
+def test_storage_bin_rejects_bin_code_longer_than_database_column():
+    from pydantic import ValidationError
+
+    from app.schemas.storage_bin import StorageBinCreate
+
+    with pytest.raises(ValidationError):
+        StorageBinCreate(bin_code="B" * 21, shelf_label="Shelf 1")
