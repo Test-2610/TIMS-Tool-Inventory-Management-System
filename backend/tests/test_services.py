@@ -387,3 +387,13 @@ def test_scheduler_does_not_change_terminal_tool_statuses(monkeypatch):
         "blocked",
         "out_of_stock",
     ]
+
+
+def test_calibration_record_rejects_future_date():
+    from datetime import date, timedelta
+    from pydantic import ValidationError
+
+    from app.schemas.calibration import CalibrationRecord
+
+    with pytest.raises(ValidationError, match="cannot be in the future"):
+        CalibrationRecord(calibration_date=date.today() + timedelta(days=1))
