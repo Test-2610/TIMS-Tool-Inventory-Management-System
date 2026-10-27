@@ -1,6 +1,6 @@
-from typing import Literal, Optional
+from typing import Any, Literal, Optional
 
-from pydantic import BaseModel, Field, model_validator
+from pydantic import BaseModel, Field, field_validator, model_validator
 
 
 class DamageAssessment(BaseModel):
@@ -16,5 +16,10 @@ class DamageAssessment(BaseModel):
 
 
 class WriteOffPayload(BaseModel):
-    reason: str
+    reason: str = Field(min_length=3)
     quantity: int = Field(default=1, ge=1)
+
+    @field_validator("reason", mode="before")
+    @classmethod
+    def trim_reason(cls, value: Any) -> Any:
+        return value.strip() if isinstance(value, str) else value
