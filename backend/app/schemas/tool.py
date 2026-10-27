@@ -1,5 +1,5 @@
-from pydantic import BaseModel, ConfigDict, Field, condecimal, model_validator
-from typing import Optional, Literal
+from pydantic import BaseModel, ConfigDict, Field, condecimal, field_validator, model_validator
+from typing import Any, Optional, Literal
 from datetime import date
 from uuid import UUID
 
@@ -26,6 +26,13 @@ class ToolCreate(BaseModel):
     last_calibration_date: Optional[date] = None
     service_partner: Optional[str] = None
 
+    @field_validator("department_access", mode="before")
+    @classmethod
+    def normalize_department_access(cls, value: Any) -> Any:
+        if isinstance(value, str):
+            return value.strip() or None
+        return value
+
 
 class ToolUpdate(BaseModel):
     model_config = ConfigDict(extra="forbid")
@@ -47,6 +54,13 @@ class ToolUpdate(BaseModel):
     calibration_freq_days: Optional[int] = Field(default=None, gt=0, le=36500)
     last_calibration_date: Optional[date] = None
     service_partner: Optional[str] = None
+
+    @field_validator("department_access", mode="before")
+    @classmethod
+    def normalize_department_access(cls, value: Any) -> Any:
+        if isinstance(value, str):
+            return value.strip() or None
+        return value
 
     @model_validator(mode="before")
     @classmethod

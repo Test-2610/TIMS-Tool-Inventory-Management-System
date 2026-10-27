@@ -250,6 +250,21 @@ def test_tool_create_rejects_invalid_financial_and_calibration_values(field, val
         ToolCreate(**payload)
 
 
+def test_tool_department_access_is_trimmed_and_blank_means_unrestricted():
+    from app.schemas.tool import ToolCreate, ToolUpdate
+
+    create_base = {
+        "tool_code": "TL-ACCESS",
+        "name": "Access Tool",
+        "tool_type": "general",
+        "total_quantity": 1,
+    }
+    assert ToolCreate(**create_base, department_access=" E&I ").department_access == "E&I"
+    assert ToolCreate(**create_base, department_access="   ").department_access is None
+    assert ToolUpdate(department_access=" E&I ").department_access == "E&I"
+    assert ToolUpdate(department_access="   ").department_access is None
+
+
 def test_requisition_number_takes_postgres_transaction_lock():
     from types import SimpleNamespace
     from unittest.mock import MagicMock
